@@ -127,16 +127,6 @@
             }
         }
         
-        @keyframes heartFade {
-            0% {
-                transform: rotate(45deg) scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: rotate(45deg) scale(2);
-                opacity: 0;
-            }
-        }
         
         @keyframes sunFade {
             0% {
@@ -274,32 +264,7 @@
         // Create shooting stars occasionally
         setInterval(createShootingStar, 2500); // Less frequent
         
-        // Create a heart-shaped firework
-        function createHeartFirework(x, y) {
-            const heartParticle = document.createElement('div');
-            heartParticle.classList.add('heart-particle');
-            
-            // Position at explosion center
-            heartParticle.style.left = x + 'px';
-            heartParticle.style.top = y + 'px';
-            
-            // Random scale
-            const scale = Math.random() * 3 + 2;
-            heartParticle.style.transform = `rotate(45deg) scale(${scale})`;
-            
-            // Random color (shades of red and pink)
-            const colors = ['#ff0000', '#ff3366', '#ff6699', '#ff0066'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            heartParticle.style.backgroundColor = randomColor;
-            heartParticle.style.setProperty('--heart-color', randomColor);
-            
-            document.body.appendChild(heartParticle);
-            
-            // Remove after animation
-            setTimeout(() => {
-                heartParticle.remove();
-            }, 1500);
-        }
+    
         
         // Create a sun-shaped firework
         function createSunFirework(x, y) {
