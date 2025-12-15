@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireworks'~'</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        h1 {
+            color: #c3cbc7;
+            font-size: 4em;
+            text-shadow: 0 0 10px rgba(73, 220, 9, 0.8), 0 0 20px rgba(255, 102, 178, 0.6);
+            margin-bottom: 40px;
+            z-index: 10;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        button {
+            background-color: #b62935;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 0 15px rgba(232, 232, 232, 0.8);
+            z-index: 10;
+        }
+        
+        button:hover {
+            transform: scale(1.1);
+            background-color: #970321;
+            box-shadow: 0 0 25px rgb(250, 248, 249);
+        }
+        
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explosion 1s ease-out forwards;
+            box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
+        }
+        
+        .heart-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            transform: rotate(45deg);
+            animation: heartFade 1.5s ease-out forwards;
+        }
+        
+        .heart-particle:before, .heart-particle:after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+        }
+        
+        .heart-particle:before {
+            top: -5px;
+            left: 0;
+        }
+        
+        .heart-particle:after {
+            top: 0;
+            left: -5px;
+        }
+        
+        .sun-particle {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffff00 20%, #ffcc00 50%, #ff9900 80%);
+            border-radius: 50%;
+            animation: sunFade 1.5s ease-out forwards;
+            box-shadow: 0 0 20px 10px rgba(255, 255, 0, 0.6);
+        }
+        
+        .sun-ray {
+            position: absolute;
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(to top, #ffff00, #ff9900, transparent);
+            left: 13px;
+            top: -20px;
+            transform-origin: bottom center;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 0, 0.4);
+        }
+        
+        @keyframes explosion {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(15);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes heartFade {
+            0% {
+                transform: rotate(45deg) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) scale(2);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sunFade {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.9;
+                box-shadow: 0 0 30px 15px rgba(255, 255, 0, 0.8);
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px 1px white;
+            opacity: 1;
+            z-index: 1;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 20px;
+        }
+}
+
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <h1 class="floating">...</h1>
+    <button id="fireworksBtn">Click to launch Fireworks!</button>
+    
+    <script>
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100; // Reduced number of stars
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                star.style.left = posX + 'px';
+                star.style.top = posY + 'px';
+                
+                // Random size
+                const size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // Random twinkling
+                const duration = Math.random() * 3 + 2;
+                star.animate([
+                    { opacity: Math.random() * 0.5 + 0.5 },
+                    { opacity: Math.random() * 0.3 + 0.2 },
+                    { opacity: Math.random() * 0.5 + 0.5 }
+                ], {
+                    duration: duration * 1000,
+                    iterations: Infinity
+                });
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Create a shooting star
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.classList.add('shooting-star');
+            
+            // Random start position (top of screen, random x)
+            const startX = Math.random() * window.innerWidth;
+            const startY = -10;
+            
+            // Random end position (bottom of screen, different x)
+            const endX = startX + (Math.random() - 0.5) * window.innerWidth * 0.8;
+            const endY = window.innerHeight + 10;
+            
+            // Set initial position
+            shootingStar.style.left = startX + 'px';
+            shootingStar.style.top = startY + 'px';
+            
+            // Add to document
+            document.body.appendChild(shootingStar);
+            
+            // Animation duration
+            const duration = Math.random() * 1 + 0.5;
+            
+            // Animate the shooting star
+            shootingStar.animate([
+                { left: startX + 'px', top: startY + 'px', opacity: 0 },
+                { opacity: 1, offset: 0.1 },
+                { left: endX + 'px', top: endY + 'px', opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                easing: 'ease-in'
+            });
+            
+            // Remove after animation
+            setTimeout(() => {
+                shootingStar.remove();
+            }, duration * 1000);
+        }
+        
+        // Create shooting stars occasionally
+        setInterval(createShootingStar, 2500); // Less frequent
+        
+        // Create a heart-shaped firework
+        function createHeartFirework(x, y) {
+            const heartParticle = document.createElement('div');
+            heartParticle.classList.add('heart-particle');
+            
+            // Position at explosion center
+            heartParticle.style.left = x + 'px';
+            heartParticle.style.top = y + 'px';
+            
+            // Random scale
+            const scale = Math.random() * 3 + 2;
+            heartParticle.style.transform = `rotate(45deg) scale(${scale})`;
+            
+            // Random color (shades of red and pink)
+            const colors = ['#ff0000', '#ff3366', '#ff6699', '#ff0066'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            heartParticle.style.backgroundColor = randomColor;
+            heartParticle.style.setProperty('--heart-color', randomColor);
+            
+            document.body.appendChild(heartParticle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                heartParticle.remove();
+            }, 1500);
+        }
+        
+        // Create a sun-shaped firework
+        function createSunFirework(x, y) {
+            const sunParticle = document.createElement('div');
+            sunParticle.classList.add('sun-particle');
+            
+            // Position at explosion center
+            sunParticle.style.left = x + 'px';
+            sunParticle.style.top = y + 'px';
+            
+            // Add rays
+            const numRays = 12; // More rays
+            for (let i = 0; i < numRays; i++) {
+                const ray = document.createElement('div');
+                ray.classList.add('sun-ray');
+                ray.style.transform = `rotate(${(i * 360 / numRays)}deg)`;
+                
+                // Vary ray lengths
+                const length = Math.random() * 10 + 20;
+                ray.style.height = `${length}px`;
+                
+                // Animate rays
+                ray.animate([
+                    { height: '5px', opacity: 0 },
+                    { height: `${length}px`, opacity: 1, offset: 0.3 },
+                    { height: `${length * 1.5}px`, opacity: 0 }
+                ], {
+                    duration: 1500,
+                    easing: 'ease-out'
+                });
+                
+                sunParticle.appendChild(ray);
+            }
+            
+            // Add inner glow effect
+            const innerGlow = document.createElement('div');
+            innerGlow.style.position = 'absolute';
+            innerGlow.style.width = '15px';
+            innerGlow.style.height = '15px';
+            innerGlow.style.backgroundColor = '#ffffff';
+            innerGlow.style.borderRadius = '50%';
+            innerGlow.style.left = '7.5px';
+            innerGlow.style.top = '7.5px';
+            innerGlow.style.opacity = '0.7';
+            sunParticle.appendChild(innerGlow);
+            
+            document.body.appendChild(sunParticle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                sunParticle.remove();
+            }, 1500);
+        }
+        
+        // Fireworks functionality
+        document.getElementById('fireworksBtn').addEventListener('click', createFireworks);
+        
+        function createFireworks() {
+            // Create 15 fireworks (reduced from 25)
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    launchFirework();
+                }, i * 200);
+            }
+        }
+        
+        function launchFirework() {
+            // Random position
+            const posX = Math.random() * window.innerWidth;
+            const posY = Math.random() * (window.innerHeight * 0.7);
+            
+            // Decide which type of firework to create
+            const fireworkType = Math.random();
+            if (fireworkType < 0.15) { // 15% chance for heart
+                createHeartFirework(posX, posY);
+            } else if (fireworkType < 0.30) { // 15% chance for sun
+                createSunFirework(posX, posY);
+            } else { // 70% chance for regular firework
+                createExplosion(posX, posY);
+            }
+        }
+        
+        function createExplosion(x, y) {
+            // Create 30 particles for each explosion (reduced from 50)
+            const particleCount = Math.floor(Math.random() * 10) + 25; // 25-35 particles
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('firework');
+                
+                // Random color
+                const colors = [
+                    '#ff66b2', // Pink
+                    '#66b3ff', // Blue
+                    '#99ff99', // Green
+                    '#ffff99', // Yellow
+                    '#ff99ff', // Purple
+                    '#ff9966', // Orange
+                    '#9966ff', // Violet
+                    '#ff3333', // Red
+                    '#33ff33', // Bright green
+                    '#33ffff'  // Cyan
+                ];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = randomColor;
+                
+                // Position at explosion center
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                // Random direction
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 150;
+                const animationDuration = Math.random() * 0.6 + 0.6;
+                
+                // Animation
+                particle.animate([
+                    { transform: 'scale(0) translate(0, 0)', opacity: 1 },
+                    { transform: `scale(1) translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`, opacity: 0 }
+                ], {
+                    duration: animationDuration * 1000,
+                    easing: 'ease-out'
+                });
+                
+                document.body.appendChild(particle);
+                
+                // Remove particle after animation
+                setTimeout(() => {
+                    particle.remove();
+                }, animationDuration * 1000);
+            }
+        }
+        
+        // Initialize stars
+        createStars();
+        
+        // Start with some initial fireworks (just a few)
+        setTimeout(() => {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    launchFirework();
+                }, i * 300);
+            }
+        }, 500);
+    </script>
+</body>
+</html>
