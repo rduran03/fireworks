@@ -71,24 +71,29 @@
             animation: explosion 1s ease-out forwards;
             box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
         }
-        
-        .heart-particle {
+
+        .star-particle {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            transform: rotate(45deg);
-            animation: heartFade 1.5s ease-out forwards;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid #ffcc00;
+            animation: starFade 1.5s ease-out forwards;
         }
         
-        .heart-particle:before, .heart-particle:after {
+        .star-particle:before {
             content: '';
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            border-radius: 50%;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #ffcc00;
+            top: 8px;
+            left: -15px;
         }
+        
         
         .heart-particle:before {
             top: -5px;
