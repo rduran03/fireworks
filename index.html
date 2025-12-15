@@ -339,7 +339,7 @@
             // Decide which type of firework to create
             const fireworkType = Math.random();
             if (fireworkType < 0.15) { // 15% chance for heart
-                createHeartFirework(posX, posY);
+                createExplosion(posX, posY);
             } else if (fireworkType < 0.30) { // 15% chance for sun
                 createSunFirework(posX, posY);
             } else { // 70% chance for regular firework
