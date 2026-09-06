@@ -271,11 +271,9 @@
             const sunParticle = document.createElement('div');
             sunParticle.classList.add('sun-particle');
             
-            // Position at explosion center
             sunParticle.style.left = x + 'px';
             sunParticle.style.top = y + 'px';
             
-            // Add rays
             const numRays = 12; // More rays
             for (let i = 0; i < numRays; i++) {
                 const ray = document.createElement('div');
@@ -319,11 +317,9 @@
             }, 1500);
         }
         
-        // Fireworks functionality
         document.getElementById('fireworksBtn').addEventListener('click', createFireworks);
         
         function createFireworks() {
-            // Create 15 fireworks (reduced from 25)
             for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
                     launchFirework();
